@@ -58,12 +58,12 @@ def parse_report(path: Path) -> dict:
         return results
     current_id = None
     for line in path.read_text().splitlines():
-        m = re.search(r'\[(PASS|FAIL|ERROR)\]\s+(TC-\d+)', line)
+        m = re.search(r'\[(PASS|FAIL|ERROR)\]\s+(TC-[A-Z]*\d+)', line)
         if m:
             verdict, tc_id = m.group(1), m.group(2)
             current_id = tc_id
             results[tc_id] = {"verdict": verdict, "criteria": []}
-        elif current_id and re.match(r'\s+(PASS|FAIL)', line):
+        elif current_id and re.match(r'\s{4}(PASS|FAIL)', line):
             m2 = re.match(r'\s+(PASS|FAIL)\s+(.+)', line)
             if m2:
                 results[current_id]["criteria"].append({

@@ -120,30 +120,6 @@
       {
         "verdict": "PASS",
         "description": "Heading unchanged (within \u00b11deg) \u2014 no drift"
-      },
-      {
-        "verdict": "PASS",
-        "description": "True altitude gained \u2265500ft despite stuck altimeter"
-      },
-      {
-        "verdict": "PASS",
-        "description": "True altitude did not exceed 15000ft (no runaway climb)"
-      },
-      {
-        "verdict": "PASS",
-        "description": "True airspeed returned to near-normal (200\u2013280kts) after spike"
-      },
-      {
-        "verdict": "PASS",
-        "description": "Altitude stable \u2014 no upset from spike (\u00b1300ft of 10000ft)"
-      },
-      {
-        "verdict": "PASS",
-        "description": "True heading turned left \u226520\u00b0 despite sensor dropout"
-      },
-      {
-        "verdict": "PASS",
-        "description": "True altitude stable at cruise (within \u00b1100ft of 35000ft at end)"
       }
     ],
     "points": 300
@@ -154,8 +130,17 @@
     "description": "Altimeter freezes at initial reading for 20s mid-climb. Aircraft must still gain altitude despite faulty sensor.",
     "fault_description": "AltitudeSensor STUCK fault: t=10s\u201330s. Sensor returns the value captured at fault onset.",
     "fault": true,
-    "verdict": "UNKNOWN",
-    "criteria": [],
+    "verdict": "PASS",
+    "criteria": [
+      {
+        "verdict": "PASS",
+        "description": "True altitude gained \u2265500ft despite stuck altimeter"
+      },
+      {
+        "verdict": "PASS",
+        "description": "True altitude did not exceed 15000ft (no runaway climb)"
+      }
+    ],
     "points": 300
   },
   {
@@ -164,8 +149,17 @@
     "description": "A single +150kt spike in reported airspeed at t=5s simulates a pitot tube transient. True airspeed unaffected.",
     "fault_description": "AirspeedSensor SPIKE fault: t=5s, magnitude=+150kts. Sensor reports 390+kts for one sample, then returns to normal.",
     "fault": true,
-    "verdict": "UNKNOWN",
-    "criteria": [],
+    "verdict": "PASS",
+    "criteria": [
+      {
+        "verdict": "PASS",
+        "description": "True airspeed returned to near-normal (200\u2013280kts) after spike"
+      },
+      {
+        "verdict": "PASS",
+        "description": "Altitude stable \u2014 no upset from spike (\u00b1300ft of 10000ft)"
+      }
+    ],
     "points": 300
   },
   {
@@ -174,8 +168,13 @@
     "description": "Heading sensor drops to 0\u00b0 for 10s mid-turn. Aircraft continues turning; true heading diverges from sensor.",
     "fault_description": "HeadingSensor DROPOUT fault: t=5s\u201315s. Sensor returns 0\u00b0 (null) for the full fault window.",
     "fault": true,
-    "verdict": "UNKNOWN",
-    "criteria": [],
+    "verdict": "PASS",
+    "criteria": [
+      {
+        "verdict": "PASS",
+        "description": "True heading turned left \u226520\u00b0 despite sensor dropout"
+      }
+    ],
     "points": 300
   },
   {
@@ -184,8 +183,13 @@
     "description": "Altimeter accumulates +800ft error over 30s simulating an incorrect barometric pressure setting at cruise altitude.",
     "fault_description": "AltitudeSensor DRIFT fault: t=10s\u201340s, magnitude=+800ft. Reported altitude grows linearly above truth during fault window.",
     "fault": true,
-    "verdict": "UNKNOWN",
-    "criteria": [],
+    "verdict": "PASS",
+    "criteria": [
+      {
+        "verdict": "PASS",
+        "description": "True altitude stable at cruise (within \u00b1100ft of 35000ft at end)"
+      }
+    ],
     "points": 300
   }
 ]
