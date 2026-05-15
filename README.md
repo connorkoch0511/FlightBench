@@ -1,6 +1,12 @@
 # FlightBench
 
+**Live dashboard → [flightbench-dashboard.vercel.app](https://flightbench-dashboard.vercel.app)**
+
 A Hardware-in-the-Loop (HIL) simulation and test harness written in C++17, modeled after real System Integration Lab (SIL) and HIL environments used in aerospace flight systems testing.
+
+![FlightBench overview](docs/01-overview.png)
+
+![Climb test — altitude and airspeed telemetry](docs/02-climb-detail.png)
 
 ## What It Does
 
