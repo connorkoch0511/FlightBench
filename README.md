@@ -49,6 +49,16 @@ reports/          Generated test reports (plain text)
 
 Each test case specifies initial conditions, a scenario, pass/fail criteria evaluated at end-of-run, and invariants evaluated every time step (e.g., altitude must stay above ground, airspeed must stay above stall speed).
 
+## Dashboard
+
+The `dashboard/` directory is a Next.js app deployed to Vercel. To redeploy after running the C++ binary and regenerating data:
+
+```bash
+./build/flightbench                          # regenerate telemetry CSVs
+python3 scripts/generate_dashboard_data.py   # convert to JSON
+vercel --prod                                # deploy from repo root
+```
+
 ## Build
 
 Requires: CMake 3.16+, a C++17 compiler (GCC, Clang, MSVC).
