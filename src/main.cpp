@@ -6,16 +6,24 @@
 #include <filesystem>
 
 int main(int argc, char* argv[]) {
-    std::string report_path = "reports/test_report.txt";
+    std::string report_path    = "reports/test_report.txt";
+    std::string telemetry_dir  = "telemetry";
 
-    if (argc > 1) {
-        std::string arg(argv[1]);
+    for (int i = 1; i < argc; ++i) {
+        std::string arg(argv[i]);
         if (arg == "--help" || arg == "-h") {
-            std::cout << "Usage: flightbench [report_output_path]\n"
-                      << "  Default report path: " << report_path << "\n";
+            std::cout << "Usage: flightbench [--report PATH] [--telemetry DIR] [--no-telemetry]\n"
+                      << "  --report PATH       Report file (default: reports/test_report.txt)\n"
+                      << "  --telemetry DIR     Telemetry CSV directory (default: telemetry/)\n"
+                      << "  --no-telemetry      Disable CSV export\n";
             return 0;
+        } else if (arg == "--no-telemetry") {
+            telemetry_dir.clear();
+        } else if (arg == "--report" && i + 1 < argc) {
+            report_path = argv[++i];
+        } else if (arg == "--telemetry" && i + 1 < argc) {
+            telemetry_dir = argv[++i];
         }
-        report_path = arg;
     }
 
     std::filesystem::create_directories(
@@ -26,7 +34,7 @@ int main(int argc, char* argv[]) {
     std::cout << "Running test suite...\n\n";
 
     auto suite   = buildTestSuite();
-    TestRunner   runner;
+    TestRunner   runner(telemetry_dir);
     auto results = runner.runAll(suite);
 
     ReportGenerator::printConsole(results);

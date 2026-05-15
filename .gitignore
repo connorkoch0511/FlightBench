@@ -1,4 +1,5 @@
 build/
 reports/
+/telemetry/
 *.o
 *.a

@@ -52,12 +52,18 @@ add_library(fb_flight_computer
 )
 target_include_directories(fb_flight_computer PUBLIC include)
 
+add_library(fb_telemetry
+    src/telemetry/TelemetryLogger.cpp
+)
+target_include_directories(fb_telemetry PUBLIC include)
+target_link_libraries(fb_telemetry PUBLIC fb_simulation)
+
 add_library(fb_test_harness
     src/test_harness/TestRunner.cpp
     src/test_harness/ReportGenerator.cpp
 )
 target_include_directories(fb_test_harness PUBLIC include)
-target_link_libraries(fb_test_harness PUBLIC fb_simulation)
+target_link_libraries(fb_test_harness PUBLIC fb_simulation fb_sensors fb_telemetry)
 
 # ── Main executable ──────────────────────────────────────────────────────────
 
@@ -68,6 +74,7 @@ target_link_libraries(flightbench PRIVATE
     fb_sensors
     fb_flight_computer
     fb_test_harness
+    fb_telemetry
 )
 
 # ── Install ──────────────────────────────────────────────────────────────────

@@ -1,7 +1,14 @@
 #include "test_harness/TestRunner.h"
 #include "simulation/SimEngine.h"
+#include "sensors/AltitudeSensor.h"
+#include "sensors/AirspeedSensor.h"
+#include "sensors/HeadingSensor.h"
 #include <exception>
 #include <sstream>
+#include <filesystem>
+
+TestRunner::TestRunner(std::string telemetry_dir)
+    : telemetry_dir_(std::move(telemetry_dir)) {}
 
 TestResult TestRunner::run(const TestCase& tc) {
     TestResult result;
@@ -15,9 +22,21 @@ TestResult TestRunner::run(const TestCase& tc) {
         SimEngine engine(0.1);
         engine.setState(tc.initial_state);
 
+        AltitudeSensor alt_sensor;
+        AirspeedSensor spd_sensor;
+        HeadingSensor  hdg_sensor;
+
+        TelemetryLogger logger;
+
         int steps = 0;
         engine.run(tc.duration_s, tc.scenario, [&](const FlightState& state) {
             ++steps;
+
+            double s_alt = alt_sensor.read(state);
+            double s_spd = spd_sensor.read(state);
+            double s_hdg = hdg_sensor.read(state);
+            logger.record(state, s_alt, s_spd, s_hdg);
+
             for (const auto& inv : tc.invariants) {
                 if (!inv.evaluate(state)) {
                     ++result.invariant_violations;
@@ -44,6 +63,11 @@ TestResult TestRunner::run(const TestCase& tc) {
         }
 
         if (result.invariant_violations > 0) result.overall = Verdict::FAIL;
+
+        if (!telemetry_dir_.empty()) {
+            std::filesystem::create_directories(telemetry_dir_);
+            logger.writeCSV(telemetry_dir_ + "/" + tc.id + ".csv");
+        }
 
     } catch (const std::exception& e) {
         result.overall        = Verdict::ERROR;
