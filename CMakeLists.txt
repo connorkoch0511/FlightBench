@@ -43,6 +43,7 @@ add_library(fb_sensors
     src/sensors/AltitudeSensor.cpp
     src/sensors/AirspeedSensor.cpp
     src/sensors/HeadingSensor.cpp
+    src/sensors/FaultInjector.cpp
 )
 target_include_directories(fb_sensors PUBLIC include)
 target_link_libraries(fb_sensors PUBLIC fb_simulation)

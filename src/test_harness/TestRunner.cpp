@@ -3,6 +3,7 @@
 #include "sensors/AltitudeSensor.h"
 #include "sensors/AirspeedSensor.h"
 #include "sensors/HeadingSensor.h"
+#include <memory>
 #include <exception>
 #include <sstream>
 #include <filesystem>
@@ -22,9 +23,19 @@ TestResult TestRunner::run(const TestCase& tc) {
         SimEngine engine(0.1);
         engine.setState(tc.initial_state);
 
-        AltitudeSensor alt_sensor;
-        AirspeedSensor spd_sensor;
-        HeadingSensor  hdg_sensor;
+        auto alt_ptr = tc.sensors.make_alt
+            ? tc.sensors.make_alt()
+            : std::make_unique<AltitudeSensor>();
+        auto spd_ptr = tc.sensors.make_spd
+            ? tc.sensors.make_spd()
+            : std::make_unique<AirspeedSensor>();
+        auto hdg_ptr = tc.sensors.make_hdg
+            ? tc.sensors.make_hdg()
+            : std::make_unique<HeadingSensor>();
+
+        Sensor& alt_sensor = *alt_ptr;
+        Sensor& spd_sensor = *spd_ptr;
+        Sensor& hdg_sensor = *hdg_ptr;
 
         TelemetryLogger logger;
 

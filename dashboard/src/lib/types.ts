@@ -20,6 +20,8 @@ export interface TestMeta {
   id: string;
   name: string;
   description: string;
+  fault_description: string;
+  fault: boolean;
   verdict: "PASS" | "FAIL" | "ERROR" | "UNKNOWN";
   criteria: Criterion[];
   points: number;

@@ -23,6 +23,10 @@ SCENARIO_NAMES = {
     "TC-005": "Turn Right",
     "TC-006": "Combined Climb + Turn",
     "TC-007": "Extended Cruise (FL350)",
+    "TC-F01": "Stuck Altimeter During Climb",
+    "TC-F02": "Airspeed Spike — Pitot Anomaly",
+    "TC-F03": "Heading Dropout During Turn",
+    "TC-F04": "Altimeter Drift — Baro Error",
 }
 
 DESCRIPTIONS = {
@@ -33,6 +37,17 @@ DESCRIPTIONS = {
     "TC-005": "30-second standard-rate right turn from heading 000. Must turn ≥30°.",
     "TC-006": "60-second combined climb and left turn. Must gain 1,000 ft and turn 15°.",
     "TC-007": "10-minute cruise at FL350. Altitude and heading must remain stable.",
+    "TC-F01": "Altimeter freezes at initial reading for 20s mid-climb. Aircraft must still gain altitude despite faulty sensor.",
+    "TC-F02": "A single +150kt spike in reported airspeed at t=5s simulates a pitot tube transient. True airspeed unaffected.",
+    "TC-F03": "Heading sensor drops to 0° for 10s mid-turn. Aircraft continues turning; true heading diverges from sensor.",
+    "TC-F04": "Altimeter accumulates +800ft error over 30s simulating an incorrect barometric pressure setting at cruise altitude.",
+}
+
+FAULT_DESCRIPTIONS = {
+    "TC-F01": "AltitudeSensor STUCK fault: t=10s–30s. Sensor returns the value captured at fault onset.",
+    "TC-F02": "AirspeedSensor SPIKE fault: t=5s, magnitude=+150kts. Sensor reports 390+kts for one sample, then returns to normal.",
+    "TC-F03": "HeadingSensor DROPOUT fault: t=5s–15s. Sensor returns 0° (null) for the full fault window.",
+    "TC-F04": "AltitudeSensor DRIFT fault: t=10s–40s, magnitude=+800ft. Reported altitude grows linearly above truth during fault window.",
 }
 
 
@@ -100,14 +115,17 @@ def main():
         rows = load_csv(csv_path, MAX_POINTS)
         result = report.get(tc_id, {"verdict": "UNKNOWN", "criteria": []})
 
+        is_fault = tc_id.startswith("TC-F")
         test_data = {
-            "id":          tc_id,
-            "name":        SCENARIO_NAMES.get(tc_id, tc_id),
-            "description": DESCRIPTIONS.get(tc_id, ""),
-            "verdict":     result["verdict"],
-            "criteria":    result["criteria"],
-            "points":      len(rows),
-            "telemetry":   rows,
+            "id":               tc_id,
+            "name":             SCENARIO_NAMES.get(tc_id, tc_id),
+            "description":      DESCRIPTIONS.get(tc_id, ""),
+            "fault_description": FAULT_DESCRIPTIONS.get(tc_id, ""),
+            "fault":            is_fault,
+            "verdict":          result["verdict"],
+            "criteria":         result["criteria"],
+            "points":           len(rows),
+            "telemetry":        rows,
         }
 
         out_path = OUTPUT_DIR / f"{tc_id}.json"

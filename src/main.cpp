@@ -1,13 +1,14 @@
 #include "test_harness/TestRunner.h"
 #include "test_harness/ReportGenerator.h"
 #include "tests/test_cases/TestSuite.h"
+#include "tests/test_cases/FaultTestSuite.h"
 #include <iostream>
 #include <string>
 #include <filesystem>
 
 int main(int argc, char* argv[]) {
-    std::string report_path    = "reports/test_report.txt";
-    std::string telemetry_dir  = "telemetry";
+    std::string report_path   = "reports/test_report.txt";
+    std::string telemetry_dir = "telemetry";
 
     for (int i = 1; i < argc; ++i) {
         std::string arg(argv[i]);
@@ -33,9 +34,16 @@ int main(int argc, char* argv[]) {
     std::cout << "\nFlightBench — Hardware-in-the-Loop Simulation Test Harness\n";
     std::cout << "Running test suite...\n\n";
 
-    auto suite   = buildTestSuite();
-    TestRunner   runner(telemetry_dir);
-    auto results = runner.runAll(suite);
+    // Build combined suite: nominal + fault injection
+    auto nominal = buildTestSuite();
+    auto faults  = buildFaultTestSuite();
+
+    std::vector<TestCase> all_cases;
+    all_cases.insert(all_cases.end(), nominal.begin(), nominal.end());
+    all_cases.insert(all_cases.end(), faults.begin(),  faults.end());
+
+    TestRunner runner(telemetry_dir);
+    auto results = runner.runAll(all_cases);
 
     ReportGenerator::printConsole(results);
     ReportGenerator::writeFile(results, report_path);

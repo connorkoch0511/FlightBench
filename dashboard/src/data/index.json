@@ -3,6 +3,8 @@
     "id": "TC-001",
     "name": "Straight and Level",
     "description": "60-second cruise at 10,000 ft. Altitude must hold within \u00b150 ft.",
+    "fault_description": "",
+    "fault": false,
     "verdict": "PASS",
     "criteria": [
       {
@@ -20,6 +22,8 @@
     "id": "TC-002",
     "name": "Climb",
     "description": "120-second climb from 5,000 ft. Must reach at least 8,000 ft.",
+    "fault_description": "",
+    "fault": false,
     "verdict": "PASS",
     "criteria": [
       {
@@ -37,6 +41,8 @@
     "id": "TC-003",
     "name": "Descent",
     "description": "90-second descent from 10,000 ft. Must lose at least 1,000 ft.",
+    "fault_description": "",
+    "fault": false,
     "verdict": "PASS",
     "criteria": [
       {
@@ -54,6 +60,8 @@
     "id": "TC-004",
     "name": "Turn Left",
     "description": "30-second standard-rate left turn from heading 090. Must turn \u226530\u00b0.",
+    "fault_description": "",
+    "fault": false,
     "verdict": "PASS",
     "criteria": [
       {
@@ -67,6 +75,8 @@
     "id": "TC-005",
     "name": "Turn Right",
     "description": "30-second standard-rate right turn from heading 000. Must turn \u226530\u00b0.",
+    "fault_description": "",
+    "fault": false,
     "verdict": "PASS",
     "criteria": [
       {
@@ -80,6 +90,8 @@
     "id": "TC-006",
     "name": "Combined Climb + Turn",
     "description": "60-second combined climb and left turn. Must gain 1,000 ft and turn 15\u00b0.",
+    "fault_description": "",
+    "fault": false,
     "verdict": "PASS",
     "criteria": [
       {
@@ -97,6 +109,8 @@
     "id": "TC-007",
     "name": "Extended Cruise (FL350)",
     "description": "10-minute cruise at FL350. Altitude and heading must remain stable.",
+    "fault_description": "",
+    "fault": false,
     "verdict": "PASS",
     "criteria": [
       {
@@ -106,8 +120,72 @@
       {
         "verdict": "PASS",
         "description": "Heading unchanged (within \u00b11deg) \u2014 no drift"
+      },
+      {
+        "verdict": "PASS",
+        "description": "True altitude gained \u2265500ft despite stuck altimeter"
+      },
+      {
+        "verdict": "PASS",
+        "description": "True altitude did not exceed 15000ft (no runaway climb)"
+      },
+      {
+        "verdict": "PASS",
+        "description": "True airspeed returned to near-normal (200\u2013280kts) after spike"
+      },
+      {
+        "verdict": "PASS",
+        "description": "Altitude stable \u2014 no upset from spike (\u00b1300ft of 10000ft)"
+      },
+      {
+        "verdict": "PASS",
+        "description": "True heading turned left \u226520\u00b0 despite sensor dropout"
+      },
+      {
+        "verdict": "PASS",
+        "description": "True altitude stable at cruise (within \u00b1100ft of 35000ft at end)"
       }
     ],
+    "points": 300
+  },
+  {
+    "id": "TC-F01",
+    "name": "Stuck Altimeter During Climb",
+    "description": "Altimeter freezes at initial reading for 20s mid-climb. Aircraft must still gain altitude despite faulty sensor.",
+    "fault_description": "AltitudeSensor STUCK fault: t=10s\u201330s. Sensor returns the value captured at fault onset.",
+    "fault": true,
+    "verdict": "UNKNOWN",
+    "criteria": [],
+    "points": 300
+  },
+  {
+    "id": "TC-F02",
+    "name": "Airspeed Spike \u2014 Pitot Anomaly",
+    "description": "A single +150kt spike in reported airspeed at t=5s simulates a pitot tube transient. True airspeed unaffected.",
+    "fault_description": "AirspeedSensor SPIKE fault: t=5s, magnitude=+150kts. Sensor reports 390+kts for one sample, then returns to normal.",
+    "fault": true,
+    "verdict": "UNKNOWN",
+    "criteria": [],
+    "points": 300
+  },
+  {
+    "id": "TC-F03",
+    "name": "Heading Dropout During Turn",
+    "description": "Heading sensor drops to 0\u00b0 for 10s mid-turn. Aircraft continues turning; true heading diverges from sensor.",
+    "fault_description": "HeadingSensor DROPOUT fault: t=5s\u201315s. Sensor returns 0\u00b0 (null) for the full fault window.",
+    "fault": true,
+    "verdict": "UNKNOWN",
+    "criteria": [],
+    "points": 300
+  },
+  {
+    "id": "TC-F04",
+    "name": "Altimeter Drift \u2014 Baro Error",
+    "description": "Altimeter accumulates +800ft error over 30s simulating an incorrect barometric pressure setting at cruise altitude.",
+    "fault_description": "AltitudeSensor DRIFT fault: t=10s\u201340s, magnitude=+800ft. Reported altitude grows linearly above truth during fault window.",
+    "fault": true,
+    "verdict": "UNKNOWN",
+    "criteria": [],
     "points": 300
   }
 ]

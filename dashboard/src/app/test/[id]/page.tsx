@@ -5,7 +5,10 @@ import { VerdictBadge } from "@/components/VerdictBadge";
 import { TelemetryChart } from "@/components/TelemetryChart";
 import type { TestData } from "@/lib/types";
 
-const TEST_IDS = ["TC-001","TC-002","TC-003","TC-004","TC-005","TC-006","TC-007"];
+const TEST_IDS = [
+  "TC-001","TC-002","TC-003","TC-004","TC-005","TC-006","TC-007",
+  "TC-F01","TC-F02","TC-F03","TC-F04",
+];
 
 export function generateStaticParams() {
   return TEST_IDS.map((id) => ({ id }));
@@ -65,6 +68,16 @@ export default async function TestPage({ params }: { params: Promise<{ id: strin
           </div>
           <VerdictBadge verdict={test.verdict} />
         </div>
+
+        {/* Fault callout */}
+        {test.fault_description && (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-amber-700 mb-1">
+              Injected Fault
+            </p>
+            <p className="text-sm text-amber-900">{test.fault_description}</p>
+          </div>
+        )}
 
         {/* Criteria */}
         <Card>
