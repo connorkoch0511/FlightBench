@@ -1,5 +1,6 @@
 # FlightBench
 
+[![CI](https://github.com/connorkoch0511/FlightBench/actions/workflows/ci.yml/badge.svg)](https://github.com/connorkoch0511/FlightBench/actions/workflows/ci.yml)
 **Live dashboard → [flightbench-dashboard.vercel.app](https://flightbench-dashboard.vercel.app)**
 
 A Hardware-in-the-Loop (HIL) simulation and test harness written in C++17, modeled after real System Integration Lab (SIL) and HIL environments used in aerospace flight systems testing.
